@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
 
+export PATH=/home/nathan/cbl/toolchains/llvm-20210105-2104-6dc3c117a30744f3fcff5297ef702c1773d9328e/bin:${PATH}
+
 set -x
 
-rm gcc-mremap.o clang-mremap.o clang-ubsan-mremap.o
+rm mremap.o
 
-gcc -O2 -c -o gcc-mremap.o mremap.i || exit ${?}
+gcc -O2 -c -o mremap.o mremap.i || exit ${?}
+llvm-nm -S mremap.o |& grep -q "__compiletime_assert_" && exit 1
+rm mremap.o
 
-/home/nathan/cbl/toolchains/llvm-20201216-2033-f03609b5c7531061be659e36824d37ef86a1fdf4/bin/clang -O2 -c -o clang-mremap.o mremap.i || exit ${?}
+clang -O2 -c -o mremap.o mremap.i || exit ${?}
+llvm-nm -S mremap.o |& grep -q "__compiletime_assert_" && exit 1
+rm mremap.o
 
-! llvm-nm clang-mremap.o |& grep __compiletime_assert || exit ${?}
-
-/home/nathan/cbl/toolchains/llvm-20201216-2033-f03609b5c7531061be659e36824d37ef86a1fdf4/bin/clang -O2 -fsanitize=unsigned-integer-overflow -c -o clang-ubsan-mremap.o mremap.i || exit ${?}
-
-llvm-nm clang-ubsan-mremap.o |& grep __compiletime_assert
+clang -O2 -fsanitize=unsigned-integer-overflow -c -o mremap.o mremap.i || exit ${?}
+llvm-nm -S mremap.o |& grep "__compiletime_assert_"
