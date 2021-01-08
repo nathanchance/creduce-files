@@ -6,6 +6,8 @@ set -x
 
 rm mremap.o
 
+clang-format -i mremap.i
+
 gcc -O2 -c -o mremap.o mremap.i || exit ${?}
 llvm-nm -S mremap.o |& grep -q "__compiletime_assert_" && exit 1
 rm mremap.o
