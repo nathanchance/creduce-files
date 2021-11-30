@@ -3,8 +3,8 @@
 set llvm_bin $CBL_SRC/llvm-project/build/stage1/bin
 
 # New warnings or invalid source are not interesting (smoke test)
-gcc -O2 -Werror -Werror={address-of-packed-member,unused-value} -Wno-error=attributes -c -o /dev/null file.i; or exit
-$llvm_bin/clang -O2 -Werror -Wno-error={address-of-packed-member,unused-value} -c -o /dev/null file.i; or exit
+gcc -O2 -W{error,address-of-packed-member,unused-value} -Wno-error=attributes -c -o /dev/null file.i; or exit
+$llvm_bin/clang -O2 -W{error,infinite-recursion} -Wno-error={address-of-packed-member,unused-value} -c -o /dev/null file.i; or exit
 
 # If the source cannot be compiling and linked with '-fsanitize=object-size' without LTO, it is not interesting
 $llvm_bin/clang -O2 -fsanitize=object-size -c -o file.o file.i; or exit
