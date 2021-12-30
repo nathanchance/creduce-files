@@ -69,6 +69,7 @@ end
 rm -f ravb{_main.o,.lto.o}
 $bad_bin/clang -O2 -fsanitize=integer-divide-by-zero -c -o ravb_main.o ravb_main.i &>/dev/null; or exit
 $root/objtool orc generate --module --no-fp --no-unreachable --uaccess --mcount ravb_main.o &| rg "unexpected end of section"
+if false
 set pipe_status $pipestatus
 if test $pipe_status[1] -eq 0
     if test $pipe_status[2] -eq 0
@@ -76,6 +77,7 @@ if test $pipe_status[1] -eq 0
     end
 else
     exit 1
+end
 end
 
 # ThinLTO + divide by zero sanitizer should present the issue with the bad toolchain
