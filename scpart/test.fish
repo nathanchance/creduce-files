@@ -8,9 +8,11 @@ llvm-nm -S scpart.o &| grep __aeabi_uldivmod
 if test "$pipestatus" = "0 0"
     exit 1
 end
+llvm-objdump -dr scpart.o
 
 rm scpart.o
 clang $clang_flags $common_flags; or return
+llvm-objdump -dr scpart.o
 llvm-nm -S scpart.o &| grep __aeabi_uldivmod
 if test "$pipestatus" = "0 0"
     exit 0
